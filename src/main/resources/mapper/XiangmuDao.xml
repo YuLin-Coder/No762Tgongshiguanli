@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.XiangmuDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.xmname as xmname
+        ,a.schedule as schedule
+        ,a.expense as expense
+        ,a.shifou_types as shifouTypes
+        ,a.qidongshu_file as qidongshuFile
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.XiangmuView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM xiangmu  a
+
+        <where>
+            <if test=" params.xmname != '' and params.xmname != null and params.xmname != 'null' ">
+                and a.xmname like CONCAT('%',#{params.xmname},'%')
+            </if>
+            <if test=" params.schedule != '' and params.schedule != null and params.schedule != 'null' ">
+                and a.schedule like CONCAT('%',#{params.schedule},'%')
+            </if>
+            <if test="params.expenseStart != null ">
+                <![CDATA[  and a.expense >= #{params.expenseStart}   ]]>
+            </if>
+            <if test="params.expenseEnd != null ">
+                <![CDATA[  and a.expense <= #{params.expenseEnd}   ]]>
+            </if>
+            <if test="params.shifouTypes != null">
+                and a.shifou_types = #{params.shifouTypes}
+            </if>
+
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>

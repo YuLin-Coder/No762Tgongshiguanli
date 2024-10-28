@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.RenwuDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.rwname as rwname
+        ,a.rwleix_types as rwleixTypes
+        ,a.neirong_content as neirongContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.RenwuView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM renwu  a
+
+        <where>
+            <if test=" params.rwname != '' and params.rwname != null and params.rwname != 'null' ">
+                and a.rwname like CONCAT('%',#{params.rwname},'%')
+            </if>
+            <if test="params.rwleixTypes != null">
+                and a.rwleix_types = #{params.rwleixTypes}
+            </if>
+            <if test=" params.neirongContent != '' and params.neirongContent != null and params.neirongContent != 'null' ">
+                and a.neirong_content like CONCAT('%',#{params.neirongContent},'%')
+            </if>
+
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.HetongDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.htname as htname
+        ,a.kehu_id as kehuId
+        ,a.httong_file as httongFile
+        ,a.neirong_content as neirongContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.HetongView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+        ,kehu.khname as khname
+        ,kehu.sex_types as sexTypes
+        ,kehu.img_photo as imgPhoto
+        ,kehu.khphone as khphone
+        ,kehu.gongshi as gongshi
+
+        FROM hetong  a
+        left JOIN kehu kehu ON a.kehu_id = kehu.id
+
+        <where>
+            <if test=" params.htname != '' and params.htname != null and params.htname != 'null' ">
+                and a.htname like CONCAT('%',#{params.htname},'%')
+            </if>
+            <if test="params.kehuId != null">
+                and a.kehu_id = #{params.kehuId}
+            </if>
+            <if test=" params.neirongContent != '' and params.neirongContent != null and params.neirongContent != 'null' ">
+                and a.neirong_content like CONCAT('%',#{params.neirongContent},'%')
+            </if>
+
+            <if test=" params.khname != '' and params.khname != null and params.khname != 'null' ">
+                and kehu.khname like CONCAT('%',#{params.khname},'%')
+            </if>
+            <if test="params.sexTypes != null">
+                and kehu.sex_types = #{params.sexTypes}
+            </if>
+
+            <if test=" params.khphone != '' and params.khphone != null and params.khphone != 'null' ">
+                and kehu.khphone like CONCAT('%',#{params.khphone},'%')
+            </if>
+            <if test=" params.gongshi != '' and params.gongshi != null and params.gongshi != 'null' ">
+                and kehu.gongshi like CONCAT('%',#{params.gongshi},'%')
+            </if>
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>
